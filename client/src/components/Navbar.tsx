@@ -33,7 +33,10 @@ const Navbar: React.FC = () => {
             onChange={handleQueryChange}
             className="bg-gray-200 px-2 py-1 rounded"
           />
-          <button type="submit" className="text-white">
+          <button
+            type="submit"
+            className="text-white bg-blue-500 border border-blue-500  px-4 rounded hover:bg-blue-600 transition duration-300"
+          >
             Search
           </button>
         </form>

@@ -12,34 +12,34 @@ const Search: React.FC = () => {
   const searchParams = useSearchParams();
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const query = searchParams.get("query");
 
   useEffect(() => {
-    setLoading(true); // Start loading
+    setLoading(true);
+    setError(null);
 
-    // Define the API URL with the query parameter
     const apiUrl = `http://localhost:8080/api/news/search?query=${query}`;
 
-    // Use Axios to fetch data from the API
     axios
       .get(apiUrl)
       .then((response) => {
         if (response.status === 200) {
           setSearchResults(response.data.articles);
         } else {
-          console.error("Error fetching search results:", response.statusText);
+          setError("Something went wrong while fetching search results.");
         }
       })
       .catch((error) => {
-        console.error("Error fetching search results:", error);
+        setError("Something went wrong while fetching search results.");
       })
       .finally(() => {
-        setLoading(false); // Stop loading when the data is fetched
+        setLoading(false);
       });
   }, [query]);
 
-  const formatIndianTime = (isoDate) => {
-    const options = {
+  const formatIndianTime = (isoDate: string | number | Date) => {
+    return new Date(isoDate).toLocaleString("en-IN", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -47,8 +47,7 @@ const Search: React.FC = () => {
       minute: "numeric",
       second: "numeric",
       timeZone: "Asia/Kolkata",
-    };
-    return new Date(isoDate).toLocaleString("en-IN", options);
+    });
   };
 
   return (
@@ -58,12 +57,14 @@ const Search: React.FC = () => {
         <div className="flex justify-center items-center h-32">
           <BarLoader color="#36D7B7" css={loaderStyle} />
         </div>
+      ) : error ? ( // Display error message if there's an error
+        <div className="text-red-500 mt-4">{error}</div>
       ) : (
         <div className="mt-4 ">
           {searchResults.map((article, index) => (
             <div
               key={index}
-              className="mb-4 p-4 border border-gray-300 rounded-lg"
+              className="mb-4 p-4 border border-gray-300 rounded-lg  shadow-md hover:shadow-lg transition duration-300"
             >
               <h3 className="text-lg font-semibold">{article.title}</h3>
               <p className="text-gray-600">{article.description}</p>

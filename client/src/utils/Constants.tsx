@@ -11,7 +11,7 @@ export const menuData = [
   },
   {
     id: 3,
-    label: "Sprots",
+    label: "Sports",
     link: "/sports",
   },
   {
